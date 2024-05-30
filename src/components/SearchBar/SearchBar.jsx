@@ -1,15 +1,19 @@
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import css from "./SearchBar.module.css"; 
 
 const SearchBar = ({ onSubmit }) => {
   const [value, setValue] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-      if (value === "") {
-        console.log("object");
+    if (value === "" || /^[^a-zA-Z]*$/.test(value)) {
+      console.log("object");
+      toast.error("To search for images you need to enter text in English!");
+      return;
     }
-      onSubmit(value);
-      setValue("");
+    onSubmit(value);
+    setValue("");
   };
 
   const handleChange = (evt) => {
@@ -19,7 +23,7 @@ const SearchBar = ({ onSubmit }) => {
 
   return (
     <header>
-      <form onSubmit={handleSubmit}>
+      <form className={css.form}  onSubmit={handleSubmit}>
         <input
           type='text'
           value={value}
@@ -30,6 +34,9 @@ const SearchBar = ({ onSubmit }) => {
         />
         <button type='submit'> Search </button>
       </form>
+      <div>
+        <Toaster />
+      </div>
     </header>
   );
 };

@@ -1,19 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import SearchBar from "./components/SearchBar/SearchBar";
 import Loader from "./components/Loader/Loader";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import fetchImages from "./components/apiService/photos-api";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "./components/ImageModal/ImageModal";
 
 import "./App.css";
 
 function App() {
-  // const [count, setCount] = useState(0)
+  const [images, setImages] = useState([]);
+  const [searchPage, setSearchPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showBtn, setShowBtn] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    if (!searchQuery) return;
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        const { total, total_pages, results } = await fetchImages(
+          searchQuery,
+          searchPage
+        );
+        // setPage(total_pages);
+
+        setImages((prevImages) => [...prevImages, ...results]);
+
+        setShowBtn(total_pages && total_pages !== searchPage);
+
+      } catch (error) {
+        setError(true);
+        // throw error;
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, [searchQuery, searchPage]);
+
+  useEffect(() => {
+    if (!isLoading && images.length > 0 && searchPage > 1) {
+      const viewportHeight = window.innerHeight;
+      window.scrollBy({
+        top: viewportHeight / 2,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [isLoading, images, searchPage]);
+
   const handleSearchBar = (searchValue) => {
-    console.log(searchValue);
+    setSearchPage(1);
+    setImages([]);
+    setError(null);
+    setSearchQuery(searchValue);
   };
+
+  const handleClickBtn = () => {
+    setSearchPage((prevPage) => prevPage + 1);
+  };
+    const handleImageClick = (imageSrc) => {
+      setSelectedImage(imageSrc);
+    };
+
+    const closeModal = () => {
+      setSelectedImage(null);
+    };
+
   return (
     <>
       <SearchBar onSubmit={handleSearchBar} />
-      <Loader />
+      {error && <ErrorMessage />}
+      {images.length > 0 && (
+        <ImageGallery
+          images={images}
+          onImageClick={handleImageClick}
+        />
+      )}
+      {isLoading && <Loader loading={isLoading} />}
+      {showBtn && <LoadMoreBtn onClick={handleClickBtn} />}
+      {selectedImage && (
+        <ImageModal
+          imageSrc={selectedImage}
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 }
