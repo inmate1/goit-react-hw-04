@@ -1,7 +1,7 @@
 import Modal from "react-modal";
 import { useState, useEffect, useRef } from "react";
-// import ImageCard from "../ImageCard/ImageCard";
 
+import css from "./ImageModal.module.css";
 const customStyles = {
   content: {
     top: "50%",
@@ -11,6 +11,12 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     WebkitOverflowScrolling: "touch",
+    maxHeight: "800px",
+    width: "1200px",
+    overlay: "hidden",
+  },
+  overlay: {
+    backgroundColor: "rgba(44, 44, 50, 0.85)",
   },
 };
 
@@ -18,74 +24,50 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 const ImageModal = ({ imageSrc, onClose }) => {
-  // let subtitle;
-  let subtitle = useRef();
-  
+  const [modalIsOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
-    if (imageSrc) {
+    if (imageSrc.modal) {
       openModal();
     }
-  }, [imageSrc]);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    if (modalIsOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+  }, [imageSrc.modal]);
 
-    // Cleanup function to restore the original overflow style
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [modalIsOpen]);
-   const openModal = () => {
-     setIsOpen(true);
+  const openModal = () => {
+    setIsOpen(true);
   };
-  
-   const afterOpenModal = () => {
+
+  const afterOpenModal = () => {
     // references are now sync'd and can be accessed.
-        if (subtitle.current) {
-          subtitle.current.style.color = "#f00";
-        }
-  }
+  };
 
   const closeModal = () => {
     setIsOpen(false);
     onClose();
   };
-
+  console.log(imageSrc);
   return (
-    // <div>
-    //   <button onClick={openModal}>Open Modal</button>
     <Modal
       isOpen={modalIsOpen}
       onAfterOpen={afterOpenModal}
       onRequestClose={closeModal}
       style={customStyles}
+      className={css.modal}
       contentLabel='Example Modal'
       shouldCloseOnOverlayClick={true} // Close on click outside
       shouldCloseOnEsc={true} // Close on ESC key press
       preventScroll={false} // Prevents scrolling
     >
-      <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-      <button onClick={onClose}>close</button>
       <div>
-        I am a modal
         <img
-          src={imageSrc}
+          src={imageSrc.modal}
           alt='Full Size'
+          style={{ width: "1200px", height: "700px" }}
         />
       </div>
-      {/* <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form> */}
+      <p className={css.descModal}>Description: {imageSrc.alt}</p>
+      <p className={css.descModal}>Author:{imageSrc.user.name}</p>
+      <p className={css.descModal}>Likes: {imageSrc.likes}</p>
     </Modal>
-    // </div>
   );
 };
 

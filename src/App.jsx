@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useId } from "react";
+import toast from "react-hot-toast";
 import SearchBar from "./components/SearchBar/SearchBar";
 import Loader from "./components/Loader/Loader";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
@@ -29,11 +29,11 @@ function App() {
           searchPage
         );
         // setPage(total_pages);
-
+        if (total === 0) {
+          toast.error("There are no images matching your request!");
+        }
         setImages((prevImages) => [...prevImages, ...results]);
-
-        setShowBtn(total_pages && total_pages !== searchPage);
-
+        setShowBtn(total_pages > 0 && total_pages !== searchPage);
       } catch (error) {
         setError(true);
         // throw error;
@@ -65,14 +65,15 @@ function App() {
   const handleClickBtn = () => {
     setSearchPage((prevPage) => prevPage + 1);
   };
-    const handleImageClick = (imageSrc) => {
-      setSelectedImage(imageSrc);
-    };
 
-    const closeModal = () => {
-      setSelectedImage(null);
-    };
+  const handleImageClick = (imageSrc) => {
+    setSelectedImage(imageSrc);
+  };
 
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+  console.log(images);
   return (
     <>
       <SearchBar onSubmit={handleSearchBar} />

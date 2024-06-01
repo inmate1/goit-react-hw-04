@@ -8,8 +8,8 @@ const SearchBar = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value === "" || /^[^a-zA-Z]*$/.test(value)) {
-      console.log("object");
       toast.error("To search for images you need to enter text in English!");
+      setValue("");
       return;
     }
     onSubmit(value);
@@ -17,7 +17,6 @@ const SearchBar = ({ onSubmit }) => {
   };
 
   const handleChange = (evt) => {
-    // const form = evt.target;
     setValue(evt.target.value.trim());
   };
 

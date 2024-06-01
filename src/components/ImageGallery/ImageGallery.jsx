@@ -9,6 +9,8 @@ const ImageGallery = ({ images, onImageClick }) => {
           id,
           alt_description,
           avg_color,
+          likes,
+           user,
           urls: { full, raw, regular, small, thumb },
         }) => (
           <ImageCard
@@ -17,6 +19,8 @@ const ImageGallery = ({ images, onImageClick }) => {
             avg_color={avg_color}
             modal={regular}
             src={small}
+            likes={likes}
+            user = {user}
             onImageClick={onImageClick}
           />
         )
