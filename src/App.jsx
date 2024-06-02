@@ -18,6 +18,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showBtn, setShowBtn] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   useEffect(() => {
     if (!searchQuery) return;
@@ -35,7 +36,6 @@ const App = () => {
         setShowBtn(total_pages > 0 && total_pages !== searchPage);
       } catch (error) {
         setError(true);
-        // throw error;
       } finally {
         setIsLoading(false);
       }
@@ -67,10 +67,11 @@ const App = () => {
 
   const handleImageClick = (imageSrc) => {
     setSelectedImage(imageSrc);
+    setIsOpenModal(true);
   };
 
   const closeModal = () => {
-    setSelectedImage(null);
+    setIsOpenModal(false);
   };
 
   return (
@@ -85,12 +86,11 @@ const App = () => {
       )}
       {isLoading && <Loader loading={isLoading} />}
       {showBtn && <LoadMoreBtn onClick={handleClickBtn} />}
-      {selectedImage && (
-        <ImageModal
-          imageSrc={selectedImage}
-          onClose={closeModal}
-        />
-      )}
+      <ImageModal
+        imageSrc={selectedImage}
+        onClose={closeModal}
+        isOpen={isOpenModal}
+      />
     </>
   );
 };
