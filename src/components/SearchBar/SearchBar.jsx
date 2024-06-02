@@ -1,6 +1,7 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import css from "./SearchBar.module.css"; 
+import css from "./SearchBar.module.css";
 
 const SearchBar = ({ onSubmit }) => {
   const [value, setValue] = useState("");
@@ -22,7 +23,10 @@ const SearchBar = ({ onSubmit }) => {
 
   return (
     <header>
-      <form className={css.form}  onSubmit={handleSubmit}>
+      <form
+        className={css.form}
+        onSubmit={handleSubmit}
+      >
         <input
           type='text'
           value={value}
@@ -39,5 +43,7 @@ const SearchBar = ({ onSubmit }) => {
     </header>
   );
 };
-
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 export default SearchBar;

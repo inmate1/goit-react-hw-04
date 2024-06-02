@@ -10,7 +10,7 @@ import ImageModal from "./components/ImageModal/ImageModal";
 
 import "./App.css";
 
-function App() {
+const App = () => {
   const [images, setImages] = useState([]);
   const [searchPage, setSearchPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,6 @@ function App() {
           searchQuery,
           searchPage
         );
-        // setPage(total_pages);
         if (total === 0) {
           toast.error("There are no images matching your request!");
         }
@@ -73,7 +72,7 @@ function App() {
   const closeModal = () => {
     setSelectedImage(null);
   };
-  console.log(images);
+
   return (
     <>
       <SearchBar onSubmit={handleSearchBar} />
@@ -94,6 +93,6 @@ function App() {
       )}
     </>
   );
-}
+};
 
 export default App;

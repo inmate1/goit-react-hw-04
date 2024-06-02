@@ -1,7 +1,9 @@
+import PropTypes from "prop-types";
 import Modal from "react-modal";
 import { useState, useEffect, useRef } from "react";
-
 import css from "./ImageModal.module.css";
+
+
 const customStyles = {
   content: {
     top: "50%",
@@ -37,14 +39,16 @@ const ImageModal = ({ imageSrc, onClose }) => {
   };
 
   const afterOpenModal = () => {
+    document.body.style.overflow = "hidden";
     // references are now sync'd and can be accessed.
   };
 
   const closeModal = () => {
     setIsOpen(false);
+    document.body.style.overflow = "unset";
     onClose();
   };
-  console.log(imageSrc);
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -69,6 +73,18 @@ const ImageModal = ({ imageSrc, onClose }) => {
       <p className={css.descModal}>Likes: {imageSrc.likes}</p>
     </Modal>
   );
+};
+
+ImageModal.propTypes = {
+  imageSrc: PropTypes.shape({
+    modal: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+    }).isRequired,
+    likes: PropTypes.number.isRequired,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default ImageModal;
